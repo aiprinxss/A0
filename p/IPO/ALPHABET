@@ -1,0 +1,12 @@
+def main():
+	I = 10
+	II = 100
+	III = 10_000_000
+
+	print(I)
+	print(II)
+	print(III)
+
+	print(type(III))
+print(main())
+

@@ -1,0 +1,18 @@
+def main():
+	
+	MCMXCII = A
+
+	type(I)
+	type(II)
+	type(III)
+	type(IV)
+	type(V)
+	type(VI)
+	type(VII)
+	type(VIII)
+	type(IX)
+	type(X)
+
+	A = 10_000_000_000_000_000_000_000
+
+main()
