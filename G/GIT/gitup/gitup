@@ -1,0 +1,42 @@
+#!/usr/bin/bash
+
+echo "GitUp"
+echo " v1.0"
+echo ""
+git log --pretty=oneline
+echo ""
+git status
+echo ""
+commit_changes() {
+    echo "Would you like to commit (y/n)"
+    read -r -n 1 commit
+    echo
+    if [[ "$commit" == "y" ]]; then
+	commit_message=$(date +%s)
+	git commit -m "$commit_message"
+	echo ""
+    	echo "commit successful: '$commit_message'"
+    else
+        echo "commit uninitialized"
+	echo ""
+    fi
+    }
+echo ""
+push_changes() {
+    echo "Would you like to push the commit to GitHub? (y/n)"
+    read -r -n 1 choice
+    echo
+    if [[ "$choice" == "y" ]]; then
+        git push
+        echo "GitHub repository updated successfully!"
+    else
+        echo "no changes pushed."
+    fi
+}
+echo ""
+commit_changes
+push_changes
+echo ""
+echo "Thank You For Choosing JAGERCZECH(c)"
+echo "JAGERCZECH CORP. 2024-25(c)"
+echo ""
