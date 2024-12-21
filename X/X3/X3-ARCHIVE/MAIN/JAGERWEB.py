@@ -2,7 +2,6 @@ import requests
 import json
 from datetime import datetime
 from urllib.parse import urlparse
-import re
 
 def get_url_from_user():
     """Prompt user to enter a URL."""
@@ -32,10 +31,6 @@ def fetch_url_content(url):
         print(f"Error fetching the URL: {e}")
         return None
 
-def sanitize_filename(filename):
-    """Sanitize the filename to remove or replace invalid characters."""
-    return re.sub(r'[^a-zA-Z0-9_-]', '_', filename)
-
 def aggregate_data(urls):
     """Aggregate data from multiple URLs."""
     aggregated_data = []
@@ -51,14 +46,11 @@ def display_aggregated_data(aggregated_data):
     print(aggregated_json)
     return aggregated_json
 
-def save_to_json_file(aggregated_data):
-    """Save the aggregated data to a JSON file with a unique name."""
-    for data in aggregated_data:
-        site_name = sanitize_filename(data['site_name'])
-        filename = f"{site_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        with open(filename, 'w') as file:
-            json.dump(data, file, indent=4)
-        print(f"Aggregated data saved to {filename}")
+def save_to_json_file(aggregated_data, filename="aggregated_data.json"):
+    """Save the aggregated data to a JSON file."""
+    with open(filename, 'w') as file:
+        json.dump(aggregated_data, file, indent=4)
+    print(f"Aggregated data saved to {filename}")
 
 def test_requests():
     """Main function to test HTTP GET requests and aggregate data."""
@@ -68,7 +60,7 @@ def test_requests():
     
     aggregated_data = aggregate_data(urls)
     aggregated_json = display_aggregated_data(aggregated_data)
-    save_to_json_file(aggregated_data)
+    save_to_json_file(aggregated_json)
 
 if __name__ == "__main__":
     test_requests()
