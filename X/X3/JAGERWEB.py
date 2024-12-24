@@ -12,6 +12,7 @@ import socket
 data_list = []
 filename = ""
 processed_urls = set()
+current_file_size = 0
 
 def get_search_results(query):
     """Fetch search results based on the query."""
@@ -73,6 +74,7 @@ def test_requests():
     global data_list
     global filename
     global processed_urls
+    global current_file_size
     data_list = []
     current_file_size = 0
 
@@ -80,7 +82,6 @@ def test_requests():
     query = input("Enter a hot word to search for: ")
 
     filename = f"jagerdata_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-    print(f"Initial filename: {filename}")
 
     while True:
         results = get_search_results(query)
@@ -91,20 +92,18 @@ def test_requests():
         new_urls = [url for url in urls if url not in processed_urls]
         processed_urls.update(new_urls)
 
-        jagerdata = [fetch_url_content(url) for url in new_urls if fetch_url_content(url)]
-        print(f"Aggregated data: {jagerdata}")
+        aggregated_data = [fetch_url_content(url) for url in new_urls if fetch_url_content(url)]
+        print(f"Aggregated data: {aggregated_data}")
 
-        for data in jagerdata:
+        for data in aggregated_data:
             if data:
                 data_list.append(data)
                 current_file_size += len(json.dumps(data, indent=4).encode('utf-8'))
 
-            if current_file_size >= 256 * 1024 * 1024:
+            if current_file_size >= 1024 * 1024 * 1024:  # 1024 MB
                 save_to_json_file(data_list, filename)
                 data_list = []
                 current_file_size = 0
-                filename = f"jagerdata_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-                print(f"New filename: {filename}")
 
         if data_list:
             save_to_json_file(data_list, filename)
