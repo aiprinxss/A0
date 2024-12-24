@@ -1,0 +1,6 @@
+# Function to restore the database from a backup
+def restore_database(backup_path, db_path):
+    shutil.copyfile(backup_path, db_path)
+
+# Restore the database
+restore_database('access_log_backup.db', 'access_log.db')

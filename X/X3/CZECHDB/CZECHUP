@@ -1,0 +1,9 @@
+import sqlite3
+import shutil
+
+# Function to backup the database
+def backup_database(db_path, backup_path):
+    shutil.copyfile(db_path, backup_path)
+
+# Backup the database
+backup_database('access_log.db', 'access_log_backup.db')

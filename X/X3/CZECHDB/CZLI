@@ -1,0 +1,18 @@
+import argparse
+import sqlite3
+
+def query_database(query):
+    conn = sqlite3.connect('access_log.db')
+    cursor = conn.cursor()
+    cursor.execute(query)
+    results = cursor.fetchall()
+    conn.close()
+    return results
+
+parser = argparse.ArgumentParser(description='Query the access_log database')
+parser.add_argument('query', type=str, help='The SQL query to execute')
+args = parser.parse_args()
+
+results = query_database(args.query)
+for row in results:
+    print(row)

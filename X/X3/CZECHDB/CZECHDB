@@ -1,0 +1,34 @@
+import sqlite3
+import json
+
+# Connect to the SQLite database (or create it if it doesn't exist)
+conn = sqlite3.connect('access_log.db')
+cursor = conn.cursor()
+
+# Create the table
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS access_log (
+    id INTEGER PRIMARY KEY,
+    site_name TEXT,
+    server_ip_address TEXT,
+    date_accessed TEXT,
+    returned_value TEXT
+)
+''')
+
+# Function to insert data into the table
+def insert_data(data):
+    cursor.execute('''
+    INSERT INTO access_log (site_name, server_ip_address, date_accessed, returned_value)
+    VALUES (?, ?, ?, ?)
+    ''', (data['site_name'], data['server_ip_address'], data['date_accessed'], data['returned_value']))
+    conn.commit()
+
+# Read and parse the JSON file
+with open('data.json') as json_file:
+    json_data = json.load(json_file)
+    for entry in json_data:
+        insert_data(entry)
+
+# Close the connection
+conn.close()
