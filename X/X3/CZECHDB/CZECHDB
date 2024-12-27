@@ -1,43 +1,27 @@
-import os
+#!/usr/bin/env python3
+print("__   __ _____________   ___   _ ____   ___ ______ _____ ")
+print("\ \ / /(___  /  ___) \ / / | | |  _ \ / _ \\  ___)  ___)")
+print(" \ v /    / /| |_   \ v /| |_| | |_) ) |_| |\ \  | |_   ")
+print("  > <    / / |  _)   > < |  _  |  _ (|  _  | > > |  _)  ")
+print(" / ^ \  / /__| |___ / ^ \| | | | |_) ) | | |/ /__| |___ ")
+print("/_/ \_\/_____)_____)_/ \_\_| |_|____/|_| |_/_____)_____)")
+print("                                     (c)JAGERCZECH CORP.")
+print("                                                        ")
 import sqlite3
-import json
 
-# Connect to the SQLite database (or create it if it doesn't exist)
-conn = sqlite3.connect('access_log.db')
-cursor = conn.cursor()
+def read_database(db_filename='jagerdata.db'):
+    """Read data from the SQLite database and print the contents."""
+    conn = sqlite3.connect(db_filename)
+    cur = conn.cursor()
+    
+    cur.execute('SELECT * FROM data')
+    rows = cur.fetchall()
+    
+    for row in rows:
+        print(row)
+    
+    conn.close()
+    print("Data read and printed from the database.")
 
-# Create the table
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS access_log (
-    id INTEGER PRIMARY KEY,
-    site_name TEXT,
-    server_ip_address TEXT,
-    date_accessed TEXT,
-    returned_value TEXT
-)
-''')
-
-# Function to insert data into the table
-def insert_data(data):
-    cursor.execute('''
-    INSERT INTO access_log (site_name, server_ip_address, date_accessed, returned_value)
-    VALUES (?, ?, ?, ?)
-    ''', (data['site_name'], data['server_ip_address'], data['date_accessed'], data['returned_value']))
-    conn.commit()
-
-# Function to read and parse JSON files in a directory
-def parse_json_directory(dir_path):
-    for filename in os.listdir(dir_path):
-        if filename.endswith('.json'):
-            filepath = os.path.join(dir_path, filename)
-            with open(filepath, 'r', encoding='utf-8') as json_file:
-                json_data = json.load(json_file)
-                for entry in json_data:
-                    insert_data(entry)
-
-# Example usage
-dir_path = '/home/userland/A0/X/X3/datastore'
-parse_json_directory(dir_path)
-
-# Close the connection
-conn.close()
+if __name__ == "__main__":
+    read_database()
