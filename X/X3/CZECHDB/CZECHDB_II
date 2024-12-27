@@ -1,0 +1,49 @@
+import os
+import sqlite3
+import json
+
+# Connect to the SQLite database (or create it if it doesn't exist)
+conn = sqlite3.connect('access_log.db')
+cursor = conn.cursor()
+
+# Create the table
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS access_log (
+    id INTEGER PRIMARY KEY,
+    site_name TEXT,
+    server_ip_address TEXT,
+    date_accessed TEXT,
+    returned_value TEXT
+)
+''')
+
+# Function to insert data into the table
+def insert_data(data):
+    cursor.execute('''
+    INSERT INTO access_log (site_name, server_ip_address, date_accessed, returned_value)
+    VALUES (?, ?, ?, ?)
+    ''', (data['site_name'], data['server_ip_address'], data['date_accessed'], data['returned_value']))
+    conn.commit()
+
+# Function to read and parse JSON files in a directory
+def parse_json_directory(dir_path):
+    for filename in os.listdir(dir_path):
+        if filename.endswith('.json'):
+            filepath = os.path.join(dir_path, filename)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as json_file:
+                    json_data = json.load(json_file)
+                    if isinstance(json_data, list):
+                        for entry in json_data:
+                            insert_data(entry)
+                    elif isinstance(json_data, dict):
+                        insert_data(json_data)
+            except json.JSONDecodeError as e:
+                print(f"Error decoding JSON file {filename}: {e}")
+
+# Example usage
+dir_path = '/home/userland/A0/X/X3/datastore'
+parse_json_directory(dir_path)
+
+# Close the connection
+conn.close()

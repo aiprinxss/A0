@@ -1,3 +1,4 @@
+import os
 import sqlite3
 import json
 
@@ -24,11 +25,19 @@ def insert_data(data):
     ''', (data['site_name'], data['server_ip_address'], data['date_accessed'], data['returned_value']))
     conn.commit()
 
-# Read and parse the JSON file
-with open('data.json') as json_file:
-    json_data = json.load(json_file)
-    for entry in json_data:
-        insert_data(entry)
+# Function to read and parse JSON files in a directory
+def parse_json_directory(dir_path):
+    for filename in os.listdir(dir_path):
+        if filename.endswith('.json'):
+            filepath = os.path.join(dir_path, filename)
+            with open(filepath, 'r', encoding='utf-8') as json_file:
+                json_data = json.load(json_file)
+                for entry in json_data:
+                    insert_data(entry)
+
+# Example usage
+dir_path = '/home/userland/A0/X/X3/datastore'
+parse_json_directory(dir_path)
 
 # Close the connection
 conn.close()
